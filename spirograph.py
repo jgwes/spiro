@@ -160,7 +160,8 @@ class SpiroAnimator:
             # set the spiro parameters
             spiro.setparams(*rparams)
             # restart drawing
-            spiro.restart()
+            spiro.draw()
+            #spiro.restart()
 
     # class update method called by the timer to update all spiro objects
     # used in the animation
@@ -182,7 +183,7 @@ class SpiroAnimator:
     # toggle turtle cursor on and off
     def toggleTurtles(self):
         for spiro in self.spiros:
-            if sprio.t.invisible():
+            if sprio.t.isvisible():
                 spiro.t.hideturtle()
             else:
                 sprio.t.showturtle()
