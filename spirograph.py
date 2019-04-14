@@ -68,21 +68,21 @@ class Spiro:
 
         # compute x and y coordinates with angle set to 0 to get curve's starting point
         x = R*((1-k)*math.cos(a) + l*k*math.cos((1-k)*a/k))
-        y = R*((1-k)*math.sin(a) + l*k*math.sin((1-k)*a/k))
+        y = R*((1-k)*math.sin(a) - l*k*math.sin((1-k)*a/k))
 
         # move the pen to the starting point computed above
-        self.t.pos(self.xc + x, self.yc + y)
+        self.t.setpos(self.xc + x, self.yc + y)
         self.t.down()
 
     # draw the entire curve in a continuous line
     def draw(self):
         # draw the rest of the points
-        R, k, l = self.R, self.K, self.l
+        R, k, l = self.R, self.k, self.l
         for i in range(0, 360*self.nRot + 1, self.step):
             a = math.radians(i)
             # compute x and y coordinates for each value of the i parameter
             x = R*((1-k)*math.cos(a) + l*k*math.cos((1-k)*a/k))
-            y = R*((1-k)*math.sin(a) + l*k*math.sin((1-k)*a/k))
+            y = R*((1-k)*math.sin(a) - l*k*math.sin((1-k)*a/k))
             self.t.setpos(self.xc + x, self.yc + y)
         # drawing is complete so hide Turtle/cursor
         self.t.hideturtle()
@@ -100,7 +100,7 @@ class Spiro:
         # and drawing the line segment in the process
         a = math.radians(self.a)
         x = R*((1-k)*math.cos(a) + l*k*math.cos((1-k)*a/k))
-        y = R*((1-k)*math.sin(a) + l*k*math.sin((1-k)*a/k))
+        y = R*((1-k)*math.sin(a) - l*k*math.sin((1-k)*a/k))
         self.t.setpos(self.xc + x, self.xy + y)
         # if drawing is complete, set the flag
         if self.a >= 360*self.nRot:
@@ -109,7 +109,7 @@ class Spiro:
             # drawing is done so hide Turtle
             self.t.hideturtle()
 
-    # def clear(self):
+    def clear(self):
         self.t.clear()
 
 
@@ -128,9 +128,11 @@ class SpiroAnimator:
         self.spiros = [] # create empty array of Spiro objects
         for i in range(N):
             # generate random parameters
-            rparams = self.genRandomParams() # creat random tuple of params
+            # creat random tuple of params
+            rparams = self.genRandomParams()
             # set the spiro parameters
-            spiro = Spiro(*rparams) # use * operator to convert rparams tuple to list of parameters
+            # use * operator to convert rparams tuple to list of parameters
+            spiro = Spiro(*rparams)
             self.spiros.append(spiro)
         # call timer
         turtle.ontimer(self.update, self.deltaT) # set ontimer to call update() every deltaT milliseconds
@@ -139,10 +141,10 @@ class SpiroAnimator:
     def genRandomParams(self):
         width, height = self.width, self.height
         R = random.randint(50, min(width, height)//2)
-        r = random.randint(50, 9*R//10)
+        r = random.randint(10, 9*R//10)
         l = random.uniform(0.1, 0.9)
         xc = random.randint(-width//2, width//2)
-        xy = random.randint(-height//2, height//2)
+        yc = random.randint(-height//2, height//2)
         col = (random.random(),
                 random.random(),
                 random.random())
@@ -158,14 +160,15 @@ class SpiroAnimator:
             # set the spiro parameters
             spiro.setparams(*rparams)
             # restart drawing
-            spiro.restart()
+            spiro.draw()
+            #spiro.restart()
 
     # class update method called by the timer to update all spiro objects
     # used in the animation
     def update(self):
         #update all spiros
         nComplete = 0
-        for sprio in self.spiros:
+        for spiro in self.spiros:
             # update
             spiro.update()
             # count completed spiros
@@ -180,7 +183,7 @@ class SpiroAnimator:
     # toggle turtle cursor on and off
     def toggleTurtles(self):
         for spiro in self.spiros:
-            if sprio.t.invisible():
+            if sprio.t.isvisible():
                 spiro.t.hideturtle()
             else:
                 sprio.t.showturtle()
@@ -221,7 +224,6 @@ def main():
     # add expected arguments
     parser.add_argument('--sparams', nargs=3, dest='sparams', required=False,
                         help="The three arguments in sparams: R, r, l.")
-
 
     # parse args
     args = parser.parse_args()
