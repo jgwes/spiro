@@ -2,7 +2,6 @@ import math
 import turtle
 
 # draws a circle
-
 def drawCircleTurtle(x, y, r):
     #move to start of circle
     turtle.up()
