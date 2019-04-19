@@ -101,7 +101,7 @@ class Spiro:
         a = math.radians(self.a)
         x = R*((1-k)*math.cos(a) + l*k*math.cos((1-k)*a/k))
         y = R*((1-k)*math.sin(a) - l*k*math.sin((1-k)*a/k))
-        self.t.setpos(self.xc + x, self.xy + y)
+        self.t.setpos(self.xc + x, self.xc + y)
         # if drawing is complete, set the flag
         if self.a >= 360*self.nRot:
         # determine if you have reached the periodicity if so quit
@@ -160,8 +160,9 @@ class SpiroAnimator:
             # set the spiro parameters
             spiro.setparams(*rparams)
             # restart drawing
+            spiro.restart()
             spiro.draw()
-            #spiro.restart()
+            
 
     # class update method called by the timer to update all spiro objects
     # used in the animation
@@ -229,10 +230,11 @@ def main():
     args = parser.parse_args()
 
     # set to 80% screen width
-    turtle.setup(width=0.8)
+    turtle.setup(width=0.7)
 
     # set cursor shape
     turtle.shape('turtle')
+    turtle.speed(10)
 
     # set title
     turtle.title("Spirographs!")
@@ -255,7 +257,7 @@ def main():
         spiro.draw()
     else:
         # create animator object
-        spiroAnim = SpiroAnimator(4)
+        spiroAnim = SpiroAnimator(1)
         # add key handler to toggle turtle cursor
         turtle.onkey(spiroAnim.toggleTurtles, "t")
         # add key handler to restart animation
